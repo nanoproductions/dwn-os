@@ -1,0 +1,8 @@
+{
+    "rust-client.channel": "stable",
+    "rust-client.engine": "rls",
+    "rust.rust-analyzer": {
+        "releaseTag": "stable",
+        "path": null
+    }
+}
