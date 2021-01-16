@@ -18,7 +18,7 @@ pub extern "C" fn _start() -> ! {
 		stack_overflow();
 	}
 
-//	stack_overflow();
+	stack_overflow();
 
 	// invoke breakpoint exception
 	 x86_64::instructions::interrupts::int3();
