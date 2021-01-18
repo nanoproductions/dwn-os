@@ -78,10 +78,6 @@ fn panic(info: &PanicInfo) -> ! {
 
 // Exception
 pub fn init() {
-	interrupts::init_idt();
-}
-
-pub fn init() {
 	gdt::init();
 	interrupts::init_idt();
 }
