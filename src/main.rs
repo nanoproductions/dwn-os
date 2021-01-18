@@ -18,17 +18,17 @@ pub extern "C" fn _start() -> ! {
 		stack_overflow();
 	}
 
-	stack_overflow();
+	// stack_overflow();
 
 	// invoke breakpoint exception
-	 x86_64::instructions::interrupts::int3();
+	//  x86_64::instructions::interrupts::int3();
 
 
 	#[cfg(test)]
 	test_main();
 
 	println!("Did not crash!");
-	loop {}
+	dwn_os::hlt_loop();
 }
 
 // Panic Function
@@ -36,7 +36,7 @@ pub extern "C" fn _start() -> ! {
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
 	println!("{}", info);
-    loop {}
+	dwn_os::hlt_loop();
 }
 
 #[cfg(test)]
