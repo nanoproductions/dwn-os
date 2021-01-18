@@ -4,8 +4,12 @@
 #![test_runner(dwn_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
-use dwn_os::println;
 use core::panic::PanicInfo;
+use dwn_os::println;
+
+// VGA
+use vga::colors::Color16;
+use vga::writers::{Graphics640x480x16, GraphicsWriter};
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
@@ -23,6 +27,17 @@ pub extern "C" fn _start() -> ! {
 	// invoke breakpoint exception
 	//  x86_64::instructions::interrupts::int3();
 
+	let mode = Graphics640x480x16::new();
+	mode.set_mode();
+	mode.clear_screen(Color16::Blue);
+	mode.draw_line((80, 60), (80, 420), Color16::White);
+	mode.draw_line((80, 60), (540, 60), Color16::White);
+	mode.draw_line((80, 420), (540, 420), Color16::White);
+	mode.draw_line((540, 420), (540, 60), Color16::White);
+	mode.draw_line((80, 90), (540, 90), Color16::White);
+	for(offset, character) in "Hello World".chars().enumerate() {
+		mode.draw_character(280 + offset * 8, 72, character, Color16::White);
+	}
 
 	#[cfg(test)]
 	test_main();
@@ -32,7 +47,7 @@ pub extern "C" fn _start() -> ! {
 }
 
 // Panic Function
-#[cfg(not(test))] 
+#[cfg(not(test))]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
 	println!("{}", info);
