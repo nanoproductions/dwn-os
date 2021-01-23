@@ -107,15 +107,6 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: &mut Interrup
     }
 }
 
-// Mouse
-extern "x86-interrupt" fn mouse_interrupt_handler(_stack_frame: &mut InterruptStackFrame) {
-    let mut port PortReadOnly::new(0x60);
-    let packet = unsafe {port.read()};
-
-    lazy_static! {
-        // pub static MOUSE: spin::Mutex
-    }
-}
 
 // Testing
 #[test_case]
