@@ -9,10 +9,6 @@ use crate::print;
 use pic8259_simple::ChainedPics;
 use spin;
 
-use ps2_mouse::{Mouse, MouseState};
-use x86_64::instructions::port::PortReadOnly;
-
-
 pub const PIC_1_OFFSET: u8 = 32;
 pub const PIC_2_OFFSET: u8 = PIC_1_OFFSET + 8;
 
@@ -29,7 +25,7 @@ lazy_static! {
                 .set_stack_index(gdt::DOUBLE_FAULT_IST_INDEX);
         }
         idt[InterruptIndex::Timer.as_usize()].set_handler_fn(timer_interrupt_handler);
-        idt[InterruptIndex::Keyboard.as_usize()].set_handler_fn(keyboard_interrupt_handler);
+        idt[InterruptIndex::Keyboard.as_usize()].set_handler_fn(keyboard_interrupt_handler);        
         idt
     };
 }
@@ -54,7 +50,7 @@ extern "x86-interrupt" fn double_fault_handler(
 #[repr(u8)]
 pub enum InterruptIndex {
     Timer = PIC_1_OFFSET,
-    Keyboard,
+    Keyboard
 }
 
 impl InterruptIndex {
@@ -106,6 +102,18 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: &mut Interrup
             .notify_end_of_interrupt(InterruptIndex::Keyboard.as_u8());
     }
 }
+
+// extern "x86-interrupt" fn mouse_interrupt_handler(_stack_frame: &mut InterruptStackFrame) {
+//     use x86_64::instructions::port::PortReadOnly;
+
+//     let mut port: PortReadOnly<InterruptIndex> = PortReadOnly::new(0x60);
+
+//     println!("HEARD MOUSE");
+
+//     unsafe {
+//         PICS.lock().notify_end_of_interrupt(InterruptIndex::Mouse.as_u8());
+//     }
+// }
 
 
 // Testing
