@@ -9,9 +9,7 @@ use crate::print;
 use pic8259_simple::ChainedPics;
 use spin;
 
-use ps2_mouse::{Mouse, MouseState};
-use x86_64::instructions::port::PortReadOnly;
-
+use crate::Shell;
 
 pub const PIC_1_OFFSET: u8 = 32;
 pub const PIC_2_OFFSET: u8 = PIC_1_OFFSET + 8;
@@ -55,6 +53,7 @@ extern "x86-interrupt" fn double_fault_handler(
 pub enum InterruptIndex {
     Timer = PIC_1_OFFSET,
     Keyboard,
+    Mouse,
 }
 
 impl InterruptIndex {
@@ -95,8 +94,14 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: &mut Interrup
     if let Ok(Some(key_event)) = keyboard.add_byte(scancode) {
         if let Some(key) = keyboard.process_keyevent(key_event) {
             match key {
-                DecodedKey::Unicode(character) => print!("{}", character),
-                DecodedKey::RawKey(key) => print!("{:?}", key),
+                DecodedKey::Unicode(character) => {
+                    print!("{}", character);
+                    // Shell::get_keyboard_input(key);
+                },
+                DecodedKey::RawKey(key) => {
+                    print!("{:?}", key);
+                    Shell::get_keyboard_input(key);
+                }
             }
         }
     }
@@ -104,16 +109,6 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: &mut Interrup
     unsafe {
         PICS.lock()
             .notify_end_of_interrupt(InterruptIndex::Keyboard.as_u8());
-    }
-}
-
-// Mouse
-extern "x86-interrupt" fn mouse_interrupt_handler(_stack_frame: &mut InterruptStackFrame) {
-    let mut port PortReadOnly::new(0x60);
-    let packet = unsafe {port.read()};
-
-    lazy_static! {
-        // pub static MOUSE: spin::Mutex
     }
 }
 

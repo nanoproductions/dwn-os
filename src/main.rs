@@ -6,10 +6,12 @@
 
 use core::panic::PanicInfo;
 use dwn_os::println;
+use dwn_os::Shell;
 
 // VGA
 use vga::colors::Color16;
 use vga::writers::{Graphics640x480x16, GraphicsWriter};
+
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
@@ -43,6 +45,11 @@ pub extern "C" fn _start() -> ! {
 	test_main();
 
 	println!("Did not crash!");
+
+
+	// CREATE SHELL
+	Shell::create_shell();
+
 	dwn_os::hlt_loop();
 }
 
