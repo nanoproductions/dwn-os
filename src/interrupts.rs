@@ -55,12 +55,8 @@ extern "x86-interrupt" fn double_fault_handler(
 #[repr(u8)]
 pub enum InterruptIndex {
     Timer = PIC_1_OFFSET,
-<<<<<<< HEAD
     Keyboard,
     Mouse,
-=======
-    Keyboard
->>>>>>> 79e340bff61356fa9a0502e8bcf992906c18ae7c
 }
 
 impl InterruptIndex {
