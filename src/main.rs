@@ -5,8 +5,8 @@
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
-use dwn_os::println;
 use dwn_os::Shell;
+use dwn_os::{println, print};
 
 // VGA
 use vga::colors::Color16;
@@ -15,6 +15,11 @@ use vga::writers::{Graphics640x480x16, GraphicsWriter};
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
+
+	println!("###########");
+	println!("#### DwnOS ####");
+	println!("###########");
+
 	println!("Hello World{}", "!");
 
 	dwn_os::init();
@@ -29,6 +34,14 @@ pub extern "C" fn _start() -> ! {
 	// invoke breakpoint exception
 	//  x86_64::instructions::interrupts::int3();
 
+	#[cfg(test)]
+	test_main();
+
+	println!("Did not crash!");
+	println!("Switching to Graphics Mode...");
+
+	loop { for _ in 0..1000000 {}; break; };
+
 	// let mode = Graphics640x480x16::new();
 	// mode.set_mode();
 	// mode.clear_screen(Color16::Black);
@@ -40,6 +53,7 @@ pub extern "C" fn _start() -> ! {
 	// for(offset, character) in "Text Editor".chars().enumerate() {
 	// 	mode.draw_character(280 + offset * 8, 72, character, Color16::White);
 	// }
+<<<<<<< HEAD
 
 	#[cfg(test)]
 	test_main();
@@ -50,6 +64,8 @@ pub extern "C" fn _start() -> ! {
 	// CREATE SHELL
 	Shell::create_shell();
 
+=======
+>>>>>>> 79e340bff61356fa9a0502e8bcf992906c18ae7c
 	dwn_os::hlt_loop();
 }
 

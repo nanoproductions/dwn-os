@@ -9,8 +9,11 @@ use crate::print;
 use pic8259_simple::ChainedPics;
 use spin;
 
+<<<<<<< HEAD
 use crate::Shell;
 
+=======
+>>>>>>> 79e340bff61356fa9a0502e8bcf992906c18ae7c
 pub const PIC_1_OFFSET: u8 = 32;
 pub const PIC_2_OFFSET: u8 = PIC_1_OFFSET + 8;
 
@@ -27,7 +30,7 @@ lazy_static! {
                 .set_stack_index(gdt::DOUBLE_FAULT_IST_INDEX);
         }
         idt[InterruptIndex::Timer.as_usize()].set_handler_fn(timer_interrupt_handler);
-        idt[InterruptIndex::Keyboard.as_usize()].set_handler_fn(keyboard_interrupt_handler);
+        idt[InterruptIndex::Keyboard.as_usize()].set_handler_fn(keyboard_interrupt_handler);        
         idt
     };
 }
@@ -52,8 +55,12 @@ extern "x86-interrupt" fn double_fault_handler(
 #[repr(u8)]
 pub enum InterruptIndex {
     Timer = PIC_1_OFFSET,
+<<<<<<< HEAD
     Keyboard,
     Mouse,
+=======
+    Keyboard
+>>>>>>> 79e340bff61356fa9a0502e8bcf992906c18ae7c
 }
 
 impl InterruptIndex {
