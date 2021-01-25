@@ -11,6 +11,7 @@ pub mod vga_buffer;
 pub mod interrupts;
 pub mod gdt;
 pub mod Shell;
+pub mod mouse;
 
 use core::panic::PanicInfo;
 
@@ -68,7 +69,7 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
 pub extern "C" fn _start() -> ! {
 	init();
 	test_main();
-    hlt_loop();
+	hlt_loop();
 }
 
 #[cfg(test)]
