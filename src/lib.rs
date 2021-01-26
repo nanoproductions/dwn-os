@@ -12,6 +12,7 @@ pub mod interrupts;
 pub mod gdt;
 pub mod Shell;
 pub mod mouse;
+pub mod GUI;
 
 use core::panic::PanicInfo;
 
