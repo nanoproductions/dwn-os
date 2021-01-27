@@ -60,6 +60,7 @@ pub enum InterruptIndex {
     Mouse = PIC_1_OFFSET + 12,
 }
 
+
 impl InterruptIndex {
     fn as_u8(self) -> u8 {
         self as u8
@@ -127,8 +128,6 @@ extern "x86-interrupt" fn mouse_interrupt_handler(_stack_frame: &mut InterruptSt
     use x86_64::instructions::port::Port;
     let mut mouse_port = Port::new(0x60);
 
-    serial_println!("Was mouse added??");
-
     lazy_static! {
         static ref MOUSE: Mutex<Mouse> = Mutex::new(Mouse::new());
     }
@@ -142,10 +141,9 @@ extern "x86-interrupt" fn mouse_interrupt_handler(_stack_frame: &mut InterruptSt
     let mouse: &mut Mouse = &mut MOUSE.lock();
     mouse.add_standard_packet(packet);
     println!("{:?}", mouse.get_position());
-
     unsafe {
-        PICS.lock()
-            .notify_end_of_interrupt(InterruptIndex::Mouse.as_u8());
+        let pics: &mut ChainedPics = &mut PICS.lock(); // Just for auto complete
+        pics.notify_end_of_interrupt(InterruptIndex::Mouse.as_u8());
     }
 }
 
