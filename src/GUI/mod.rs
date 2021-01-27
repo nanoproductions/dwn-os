@@ -8,7 +8,7 @@ use crate::serial_println;
 
 use core::convert::TryInto;
 
-const MODE: Graphics640x480x16 = Graphics640x480x16::new();
+pub const MODE: Graphics640x480x16 = Graphics640x480x16::new();
 
 pub fn create_GUI() {
 	MODE.set_mode();
@@ -25,10 +25,13 @@ pub fn create_GUI() {
 	}
 }
 
-pub fn draw_mouse(x: isize, y: isize) {
+pub fn draw_mouse(mut x: isize, mut y: isize) {
 	serial_println!("Mouse: ({}, {})", x, y);
 
-	// let x_pos = x.try_into().unwrap();
-	// let y_pos = y.try_into().unwrap();
-	// MODE.set_pixel(x_pos, y_pos, Color16::Red);
+	x = x * -1;
+	y = y * -1;
+
+	let x_pos = x as usize;
+	let y_pos = y as usize;
+	MODE.set_pixel(x_pos, y_pos, Color16::Red);
 }

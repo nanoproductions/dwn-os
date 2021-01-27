@@ -72,8 +72,8 @@ impl Mouse {
         }
 
         self.button_state = MouseButtonState::parse_state(state);
-        self.current_x = Mouse::get_signed_value(packet[1], state, 4);
-        self.current_y = Mouse::get_signed_value(packet[2], state, 5);
+        self.current_x = self.current_x + Mouse::get_signed_value(packet[1], state, 4);
+        self.current_y = self.current_y + Mouse::get_signed_value(packet[2], state, 5);
         self.current_z = Mouse::get_z_value(packet[3]);
     }
 
