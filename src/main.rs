@@ -54,7 +54,7 @@ pub extern "C" fn _start() -> ! {
 	Shell::create_shell();
 
 	// Create GUI
-	// GUI::create_GUI();
+	GUI::create_GUI();
 
 	dwn_os::hlt_loop();
 }
