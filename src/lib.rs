@@ -10,6 +10,10 @@ pub mod serial;
 pub mod vga_buffer;
 pub mod interrupts;
 pub mod gdt;
+pub mod Shell;
+pub mod mouse;
+pub mod GUI;
+pub mod ps2;
 
 use core::panic::PanicInfo;
 
@@ -67,7 +71,7 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
 pub extern "C" fn _start() -> ! {
 	init();
 	test_main();
-    hlt_loop();
+	hlt_loop();
 }
 
 #[cfg(test)]
@@ -81,6 +85,7 @@ pub fn init() {
 	gdt::init();
 	interrupts::init_idt();
 	unsafe { interrupts::PICS.lock().initialize() };
+	ps2::init();
 	x86_64::instructions::interrupts::enable();
 }
 

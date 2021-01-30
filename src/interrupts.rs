@@ -5,9 +5,13 @@ use lazy_static::lazy_static;
 
 use crate::gdt;
 use crate::print;
+use crate::serial_println;
 
 use pic8259_simple::ChainedPics;
 use spin;
+
+use crate::Shell;
+use crate::GUI::draw_mouse;
 
 pub const PIC_1_OFFSET: u8 = 32;
 pub const PIC_2_OFFSET: u8 = PIC_1_OFFSET + 8;
@@ -26,6 +30,8 @@ lazy_static! {
         }
         idt[InterruptIndex::Timer.as_usize()].set_handler_fn(timer_interrupt_handler);
         idt[InterruptIndex::Keyboard.as_usize()].set_handler_fn(keyboard_interrupt_handler);
+        serial_println!("WE ARE ABOUT TO USE MOUSE");
+        idt[InterruptIndex::Mouse.as_usize()].set_handler_fn(mouse_interrupt_handler);
         idt
     };
 }
@@ -33,6 +39,7 @@ lazy_static! {
 pub fn init_idt() {
     IDT.load();
 }
+
 extern "x86-interrupt" fn breakpoint_handler(stack_frame: &mut InterruptStackFrame) {
     println!("EXCEPTION: BREAKPOINT\n{:#?}", stack_frame)
 }
@@ -45,13 +52,15 @@ extern "x86-interrupt" fn double_fault_handler(
     panic!("EXCEPTION: DOUBLE FAULT\n{:#?}", stack_frame);
 }
 
-// Handle Timer Interrupts
+// Handle Interrupts
 #[derive(Debug, Clone, Copy)]
 #[repr(u8)]
 pub enum InterruptIndex {
     Timer = PIC_1_OFFSET,
-    Keyboard,
+    Keyboard = PIC_1_OFFSET + 1,
+    Mouse = PIC_1_OFFSET + 12,
 }
+
 
 impl InterruptIndex {
     fn as_u8(self) -> u8 {
@@ -63,6 +72,7 @@ impl InterruptIndex {
     }
 }
 
+#[macro_use]
 extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: &mut InterruptStackFrame) {
     // print!(".");
 
@@ -73,6 +83,7 @@ extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: &mut InterruptSt
 }
 
 // KEYBOARD
+#[macro_use]
 extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: &mut InterruptStackFrame) {
     use pc_keyboard::{layouts, DecodedKey, HandleControl, Keyboard, ScancodeSet1};
     use spin::Mutex;
@@ -91,8 +102,16 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: &mut Interrup
     if let Ok(Some(key_event)) = keyboard.add_byte(scancode) {
         if let Some(key) = keyboard.process_keyevent(key_event) {
             match key {
-                DecodedKey::Unicode(character) => print!("{}", character),
-                DecodedKey::RawKey(key) => print!("{:?}", key),
+                DecodedKey::Unicode(character) => {
+                    print!("{}", character);
+                    serial_println!("Pressed {}", character);
+                    // Shell::get_keyboard_input(key);
+                }
+                DecodedKey::RawKey(key) => {
+                    serial_println!("Simple Keys {:?}", key);
+                    print!("{:?}", key);
+                    Shell::get_keyboard_input(key);
+                }
             }
         }
     }
@@ -100,6 +119,33 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: &mut Interrup
     unsafe {
         PICS.lock()
             .notify_end_of_interrupt(InterruptIndex::Keyboard.as_u8());
+    }
+}
+
+#[macro_use]
+extern "x86-interrupt" fn mouse_interrupt_handler(_stack_frame: &mut InterruptStackFrame) {
+    use crate::mouse::Mouse;
+    use spin::Mutex;
+    use x86_64::instructions::port::Port;
+    let mut mouse_port = Port::new(0x60);
+
+    lazy_static! {
+        static ref MOUSE: Mutex<Mouse> = Mutex::new(Mouse::new());
+    }
+
+    let mut packet = [0 as u8; 4];
+    for i in 0..4 {
+        let byte = unsafe { mouse_port.read() };
+        packet[i] = byte;
+    }
+
+    let mouse: &mut Mouse = &mut MOUSE.lock();
+    mouse.add_standard_packet(packet);
+    draw_mouse(mouse.get_position().x, mouse.get_position().y);
+    println!("{:?}", mouse.get_position());
+    unsafe {
+        let pics: &mut ChainedPics = &mut PICS.lock(); // Just for auto complete
+        pics.notify_end_of_interrupt(InterruptIndex::Mouse.as_u8());
     }
 }
 
