@@ -3,6 +3,7 @@
 #![feature(custom_test_frameworks)]
 #![test_runner(dwn_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
+#![feature(asm)] //new 
 
 use core::panic::PanicInfo;
 use dwn_os::Shell;
@@ -54,7 +55,7 @@ pub extern "C" fn _start() -> ! {
 	Shell::create_shell();
 
 	// Create GUI
-	GUI::create_GUI();
+	// GUI::create_GUI();
 
 	dwn_os::hlt_loop();
 }
