@@ -27,12 +27,10 @@ pub extern "C" fn _start() -> ! {
 
 	dwn_os::init();
 
-	// RECURSION _ OVERFLOW STACK
-	fn stack_overflow() {
-		stack_overflow();
-	}
+	use x86_64::registers::control::Cr3;
 
-	// stack_overflow();
+	let (level_4_page_table, _) = Cr3::read();
+	println!("Level 4 page table as {:?}", level_4_page_table.start_address());
 
 	// invoke breakpoint exception
 	//  x86_64::instructions::interrupts::int3();
@@ -41,9 +39,6 @@ pub extern "C" fn _start() -> ! {
 	test_main();
 
 	println!("Did not crash!");
-	println!("Switching to Graphics Mode...");
-
-	// loop { for _ in 0..1000000 {}; break; };
 
 	#[cfg(test)]
 	test_main();
@@ -52,7 +47,7 @@ pub extern "C" fn _start() -> ! {
 
 
 	// CREATE SHELL
-	Shell::create_shell();
+	// Shell::create_shell();
 
 	// Create GUI
 	// GUI::create_GUI();
