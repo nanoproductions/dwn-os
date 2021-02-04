@@ -14,6 +14,7 @@ pub mod Shell;
 pub mod mouse;
 pub mod GUI;
 pub mod ps2;
+pub mod memory;
 
 use core::panic::PanicInfo;
 
@@ -67,8 +68,13 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
 }
 
 #[cfg(test)]
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
+use bootloader::{entry_point, BootInfo};
+
+#[cfg(test)]
+entry_point!(test_kernel_main);
+
+#[cfg(test)]
+fn test_kernel_main(_boot_info: &'static BootInfo) -> ! {
 	init();
 	test_main();
 	hlt_loop();

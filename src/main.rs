@@ -15,22 +15,39 @@ use dwn_os::GUI;
 use vga::colors::Color16;
 use vga::writers::{Graphics640x480x16, GraphicsWriter};
 
+use bootloader::{BootInfo, entry_point};
 
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
+entry_point!(kernel_main);
 
-	println!("###########");
+fn kernel_main(boot_info: &'static BootInfo) -> ! {
+
+	use dwn_os::memory::translate_addr;
+	use x86_64::VirtAddr;
+
 	println!("#### DwnOS ####");
-	println!("###########");
 
 	println!("Hello World{}", "!");
 
 	dwn_os::init();
 
-	use x86_64::registers::control::Cr3;
+	let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+	
+	let addresses = [
+		// vga buffer page
+		0xb8000,
+		// some code page
+		0201008,
+		// some stack page
+		0x0100_0020_1a10,
+		// virt add mapped to physical address 0
+		boot_info.physical_memory_offset,
+	];
 
-	let (level_4_page_table, _) = Cr3::read();
-	println!("Level 4 page table as {:?}", level_4_page_table.start_address());
+	for &address in &addresses {
+		// let virt = VirtAddr::new(address);
+		// let phys = unsafe {translate_addr(virt, phys_mem_offset)};
+		// println!("{:?} -> {:?}", virt, phys);
+	}
 
 	// invoke breakpoint exception
 	//  x86_64::instructions::interrupts::int3();
@@ -50,7 +67,7 @@ pub extern "C" fn _start() -> ! {
 	// Shell::create_shell();
 
 	// Create GUI
-	// GUI::create_GUI();
+	GUI::create_GUI();
 
 	dwn_os::hlt_loop();
 }
