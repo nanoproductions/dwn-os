@@ -142,6 +142,7 @@ extern "x86-interrupt" fn mouse_interrupt_handler(_stack_frame: &mut InterruptSt
     let mouse: &mut Mouse = &mut MOUSE.lock();
     mouse.add_standard_packet(packet);
     println!("{:?}", mouse.get_position());
+    serial_println!("{:?}", mouse.get_position());
     unsafe {
         let pics: &mut ChainedPics = &mut PICS.lock(); // Just for auto complete
         pics.notify_end_of_interrupt(InterruptIndex::Mouse.as_u8());
