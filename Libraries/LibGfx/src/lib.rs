@@ -1,7 +1,7 @@
 #![no_std]
 use vga::colors::Color16;
 use vga::writers::{Graphics640x480x16, GraphicsWriter};
-use dwn_os::serial;
+
 
 pub const MODE: Graphics640x480x16 = Graphics640x480x16::new();
 static mut PREVIOUS_MOUSE: [usize; 2] = [0, 0];
@@ -20,7 +20,7 @@ pub fn create_GUI() {
 		MODE.draw_character(280 + offset * 8, 72, character, Color16::Black);
 	}
 
-	serial_println!("Hello from GUI!");
+	// serial_println!("Hello from GUI!");
 }
 
 #[cfg(test)]

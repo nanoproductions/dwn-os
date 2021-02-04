@@ -10,7 +10,6 @@ pub mod serial;
 pub mod vga_buffer;
 pub mod interrupts;
 pub mod gdt;
-pub mod Shell;
 pub mod mouse;
 pub mod ps2;
 pub mod memory;

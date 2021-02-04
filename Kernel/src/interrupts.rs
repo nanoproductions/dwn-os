@@ -10,8 +10,6 @@ use crate::serial_println;
 use pic8259_simple::ChainedPics;
 use spin;
 
-use crate::Shell;
-
 pub const PIC_1_OFFSET: u8 = 32;
 pub const PIC_2_OFFSET: u8 = PIC_1_OFFSET + 8;
 
@@ -105,12 +103,10 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: &mut Interrup
                 DecodedKey::Unicode(character) => {
                     print!("{}", character);
                     serial_println!("Pressed {}", character);
-                    // Shell::get_keyboard_input(key);
                 }
                 DecodedKey::RawKey(key) => {
                     serial_println!("Simple Keys {:?}", key);
                     print!("{:?}", key);
-                    Shell::get_keyboard_input(key);
                 }
             }
         }

@@ -46,7 +46,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d531514efb06912141fa65967447de805691b685a7565c87d1765afe34a98aa7"
 
 [[package]]
-name = "dwn-os"
+name = "dwn_os"
 version = "0.1.0"
 dependencies = [
  "bootloader",
