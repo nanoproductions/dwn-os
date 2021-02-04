@@ -20,9 +20,9 @@ checksum = "cf1de2fe8c75bc145a2f577add951f8134889b4795d47466a54a5c846d691693"
 
 [[package]]
 name = "bootloader"
-version = "0.9.12"
+version = "0.9.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "452bbab4eae8767805ff09386c9e26d42ceb6964916ab3c64425469342473f91"
+checksum = "83732ad599045a978528e4311539fdcb20c30e406b66d1d08cd4089d4fc8d90f"
 
 [[package]]
 name = "conquer-once"
@@ -51,14 +51,13 @@ version = "0.1.0"
 dependencies = [
  "bootloader",
  "lazy_static",
- "lib_gfx",
  "pc-keyboard",
  "pic8259_simple",
  "spin",
  "uart_16550",
  "vga",
  "volatile",
- "x86_64 0.12.4",
+ "x86_64",
 ]
 
 [[package]]
@@ -74,13 +73,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 dependencies = [
  "spin",
-]
-
-[[package]]
-name = "lib_gfx"
-version = "0.1.0"
-dependencies = [
- "vga",
 ]
 
 [[package]]
@@ -123,10 +115,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 
 [[package]]
-name = "shell"
-version = "0.1.0"
-
-[[package]]
 name = "spin"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -143,12 +131,12 @@ dependencies = [
 
 [[package]]
 name = "uart_16550"
-version = "0.2.12"
+version = "0.2.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8d45a3c9181dc9ba7d35d02b3c36d1604155289d935b7946510fb3d2f4b976d9"
+checksum = "afb00b16a4c8acbfc4eb8cfeda1f9c0507c7e87c6563edce64a236af93acf70c"
 dependencies = [
  "bitflags",
- "x86_64 0.13.2",
+ "x86_64",
 ]
 
 [[package]]
@@ -162,7 +150,7 @@ dependencies = [
  "font8x8",
  "num-traits",
  "spinning_top",
- "x86_64 0.12.4",
+ "x86_64",
 ]
 
 [[package]]
@@ -176,16 +164,6 @@ name = "x86_64"
 version = "0.12.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8f3a6840d540b8dbe400f4ed5afe5816105ee5edebe485299a761d0d8b43cef7"
-dependencies = [
- "bit_field",
- "bitflags",
-]
-
-[[package]]
-name = "x86_64"
-version = "0.13.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b871116e3c83dad0795580b10b2b1dd05cb52ec719af36180371877b09681f7f"
 dependencies = [
  "bit_field",
  "bitflags",

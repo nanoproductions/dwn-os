@@ -11,7 +11,6 @@ use pic8259_simple::ChainedPics;
 use spin;
 
 use crate::Shell;
-use crate::GUI::draw_mouse;
 
 pub const PIC_1_OFFSET: u8 = 32;
 pub const PIC_2_OFFSET: u8 = PIC_1_OFFSET + 8;
@@ -142,7 +141,6 @@ extern "x86-interrupt" fn mouse_interrupt_handler(_stack_frame: &mut InterruptSt
 
     let mouse: &mut Mouse = &mut MOUSE.lock();
     mouse.add_standard_packet(packet);
-    draw_mouse(mouse.get_position().x, mouse.get_position().y);
     println!("{:?}", mouse.get_position());
     unsafe {
         let pics: &mut ChainedPics = &mut PICS.lock(); // Just for auto complete

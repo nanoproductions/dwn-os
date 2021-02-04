@@ -12,7 +12,6 @@ pub mod interrupts;
 pub mod gdt;
 pub mod Shell;
 pub mod mouse;
-pub mod GUI;
 pub mod ps2;
 pub mod memory;
 

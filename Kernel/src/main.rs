@@ -9,11 +9,8 @@ use core::panic::PanicInfo;
 use dwn_os::Shell;
 use dwn_os::{println, print, serial_println};
 use dwn_os::interrupts;
-use dwn_os::GUI;
 
-// VGA
-use vga::colors::Color16;
-use vga::writers::{Graphics640x480x16, GraphicsWriter};
+use lib_gfx;
 
 use bootloader::{BootInfo, entry_point};
 
@@ -66,8 +63,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 	// CREATE SHELL
 	// Shell::create_shell();
 
-	// Create GUI
-	GUI::create_GUI();
+	lib_gfx::create_GUI();
 
 	dwn_os::hlt_loop();
 }
