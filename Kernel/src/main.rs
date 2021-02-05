@@ -6,7 +6,6 @@
 #![feature(asm)] //new 
 
 use core::panic::PanicInfo;
-use dwn_os::Shell;
 use dwn_os::{println, print, serial_println};
 use dwn_os::interrupts;
 
@@ -63,9 +62,11 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 	// CREATE SHELL
 	// Shell::create_shell();
 
-	lib_gfx::create_GUI();
+	// lib_gfx::create_GUI();
 
 	dwn_os::hlt_loop();
+
+	
 }
 
 // Panic Function
