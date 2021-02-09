@@ -13,7 +13,7 @@ pub mod gdt;
 pub mod mouse;
 pub mod ps2;
 pub mod memory;
-pub mod rtc;
+// pub mod rtc;
 
 use core::panic::PanicInfo;
 
