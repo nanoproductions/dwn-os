@@ -11,6 +11,15 @@ pub mod window;
 pub fn create_GUI() {
 	MODE.set_mode();
 	MODE.clear_screen(Color16::White);
+
+	for x in 0..20 {
+		MODE.draw_line((0, 0 + x), (640, 0 + x), Color16::Black);
+	}
+
+	for(offset, character) in "9:41".chars().enumerate() {
+		MODE.draw_character(288 + offset * 8, 5, character, Color16::White);
+	}
+
 	// MODE.draw_line((1, 10), (5, 10), Color16::Magenta);
 	// MODE.draw_line((80, 60), (80, 420), Color16::Black);
 	// MODE.draw_line((80, 60), (540, 60), Color16::Black);

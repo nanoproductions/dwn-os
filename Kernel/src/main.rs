@@ -66,7 +66,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
 	use lib_gfx::window;
 
-	let main_window = window::Window::new(10, 10, 300, 300);
+	// let main_window = window::Window::new(10, 10, 300, 300);
 
 	serial_println!("Creating window...");
 
