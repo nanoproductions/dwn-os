@@ -2,7 +2,6 @@
 use vga::colors::Color16;
 use vga::writers::{Graphics640x480x16, GraphicsWriter};
 
-
 pub const MODE:  Graphics640x480x16 = Graphics640x480x16::new();
 // static mut PREVIOUS_MOUSE: [usize; 2] = [0, 0];
 
@@ -38,6 +37,10 @@ pub fn create_GUI() {
 struct Position {
 	x: isize,
 	y: isize
+}
+
+pub fn draw_mouse() {
+	MODE.clear_screen(Color16::Red);
 }
 
 #[cfg(test)]
