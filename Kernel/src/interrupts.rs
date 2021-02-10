@@ -120,28 +120,15 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: &mut Interrup
 
 #[macro_use]
 extern "x86-interrupt" fn mouse_interrupt_handler(_stack_frame: &mut InterruptStackFrame) {
-    use crate::mouse::Mouse;
-    use spin::Mutex;
-    use x86_64::instructions::port::Port;
-    let mut mouse_port = Port::new(0x60);
+    use super::mouse::MOUSE;
+    use x86_64::instructions::port::PortReadOnly;
 
-    lazy_static! {
-        static ref MOUSE: Mutex<Mouse> = Mutex::new(Mouse::new());
-    }
+    let mut port = PortReadOnly::new(0x60);
+    let packet = unsafe {port.read()};
+    MOUSE.lock().process_packet(packet);
 
-    let mut packet = [0 as u8; 4];
-    for i in 0..4 {
-        let byte = unsafe { mouse_port.read() };
-        packet[i] = byte;
-    }
-
-    let mouse: &mut Mouse = &mut MOUSE.lock();
-    mouse.add_standard_packet(packet);
-    println!("{:?}", mouse.get_position());
-    serial_println!("{:?}", mouse.get_position());
     unsafe {
-        let pics: &mut ChainedPics = &mut PICS.lock(); // Just for auto complete
-        pics.notify_end_of_interrupt(InterruptIndex::Mouse.as_u8());
+        PICS.lock().notify_end_of_interrupt(InterruptIndex::Mouse.as_u8());
     }
 }
 

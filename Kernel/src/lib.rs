@@ -11,7 +11,6 @@ pub mod vga_buffer;
 pub mod interrupts;
 pub mod gdt;
 pub mod mouse;
-pub mod ps2;
 pub mod memory;
 // pub mod rtc;
 
@@ -90,7 +89,7 @@ pub fn init() {
 	gdt::init();
 	interrupts::init_idt();
 	unsafe { interrupts::PICS.lock().initialize() };
-	ps2::init();
+	mouse::init_mouse();
 	x86_64::instructions::interrupts::enable();
 }
 

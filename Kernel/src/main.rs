@@ -62,9 +62,9 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 	// CREATE SHELL
 	// Shell::create_shell();
 
-	lib_gfx::create_GUI();
+	// lib_gfx::create_GUI();
 
-	use lib_gfx::window;
+	// use lib_gfx::window;
 
 	// let main_window = window::Window::new(10, 10, 300, 300);
 
