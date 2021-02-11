@@ -17,5 +17,5 @@ pub fn init_mouse() {
 
 fn on_complete(mouse_state: MouseState) {
     println!("{:?}", mouse_state);
-    serial_println!("{}, {}", mouse_state.x_moved(), mouse_state.get_y());
+    serial_println!("{}, {}", mouse_state.get_x(), mouse_state.get_y());
 }
