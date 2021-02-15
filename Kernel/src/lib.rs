@@ -1,18 +1,21 @@
 #![no_std]
-
+#![feature(alloc_error_handler)]
 #![cfg_attr(test, no_main)]
 #![feature(custom_test_frameworks)]
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 #![feature(abi_x86_interrupt)]
 
+pub mod allocator;
+pub mod gdt;
+pub mod interrupts;
+pub mod memory;
+pub mod mouse;
 pub mod serial;
 pub mod vga_buffer;
-pub mod interrupts;
-pub mod gdt;
-pub mod mouse;
-pub mod memory;
 // pub mod rtc;
+
+extern crate alloc;
 
 use core::panic::PanicInfo;
 
@@ -20,9 +23,9 @@ pub trait Testable {
 	fn run(&self) -> ();
 }
 
-impl <T> Testable for T
+impl<T> Testable for T
 where
-	T: Fn()
+	T: Fn(),
 {
 	fn run(&self) {
 		serial_print!("{}...\t", core::any::type_name::<T>());
@@ -45,7 +48,6 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
 	serial_println!("[failed]\n");
 	serial_println!("Error: {}\n", info);
 	exit_qemu(QemuExitCode::Failed);
-	
 	hlt_loop();
 }
 
@@ -81,7 +83,7 @@ fn test_kernel_main(_boot_info: &'static BootInfo) -> ! {
 #[cfg(test)]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-    test_panic_handler(info)
+	test_panic_handler(info)
 }
 
 // Exception
@@ -97,4 +99,9 @@ pub fn hlt_loop() -> ! {
 	loop {
 		x86_64::instructions::hlt();
 	}
+}
+
+#[alloc_error_handler]
+fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
+	panic!("allocation error: {:?}", layout);
 }
