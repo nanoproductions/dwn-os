@@ -6,12 +6,7 @@
 #![feature(asm)] //new 
 
 use core::panic::PanicInfo;
-use dwn_os::{println, print, serial_println};
-use dwn_os::interrupts;
-
-use lib_gfx;
-
-use x86_64::{structures::paging::Page, VirtAddr};
+use dwn_os::{println};
 
 use bootloader::{BootInfo, entry_point};
 
@@ -22,7 +17,6 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 	use dwn_os::memory;
 	use x86_64::VirtAddr;
 	use x86_64::structures::paging::MapperAllSizes;
-	use dwn_os::memory::BootInfoFrameAllocator;
 
 	println!("#### DwnOS ####");
 
@@ -31,17 +25,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 	dwn_os::init();
 
 	let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
-	let mut mapper  = unsafe { memory::init(phys_mem_offset) };
-
-	let mut frame_allocator = memory::EmptyFrameAllocator;
-
-	// map an unused page
-	let page = Page::containing_address(VirtAddr::new(0xdeadbeaf000));
-	memory::create_example_mapping(page, &mut mapper, &mut frame_allocator);
-
-	// write the string "New!" to the screen
-	let page_ptr: *mut u64 = page.start_address().as_mut_ptr();
-	unsafe { page_ptr.offset(400).write_volatile(0x_f021_f077_f065_f04e)};
+	let mapper  = unsafe { memory::init(phys_mem_offset) };
 
 	let addresses = [
 		// vga buffer page
@@ -59,10 +43,6 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 		let phys = mapper.translate_addr(virt);
 		println!("{:?} -> {:?}", virt, phys);
 	}
-
-	let mut frame_allocator = unsafe {
-		BootInfoFrameAllocator::init(&boot_info.memory_map)
-	};
 
 	#[cfg(test)]
 	test_main();

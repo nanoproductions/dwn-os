@@ -3,12 +3,11 @@ use x86_64::{structures::paging::PageTable, VirtAddr};
 
 use x86_64::{
     structures::paging::{
-        FrameAllocator, MappedPageTable, Mapper, MapperAllSizes, Page, PhysFrame, Size4KiB,
+        FrameAllocator, PhysFrame, Size4KiB
     },
     PhysAddr,
 };
-
-use bootloader::bootinfo::MemoryRegionType;
+use bootloader::bootinfo::{MemoryRegionType, MemoryMap};
 
 // This function is unsafe
 unsafe fn active_level_4_table(physical_memory_offset: VirtAddr) -> &'static mut PageTable {
@@ -30,7 +29,7 @@ pub unsafe fn init(physical_memory_offset: VirtAddr) -> OffsetPageTable<'static>
 
 pub struct EmptyFrameAllocator;
 
-unsafe impl FrameAllocator<Size4KiB> for EmptyFrameAllocator {
+unsafe impl FrameAllocator<Size4KiB> for BootInfoFrameAllocator {
     fn allocate_frame(&mut self) -> Option<PhysFrame> {
         let frame = self.usable_frames().nth(self.next);
         self.next += 1;
@@ -64,6 +63,6 @@ impl BootInfoFrameAllocator {
         let frame_address = addr_ranges.flat_map(|r| r.step_by(4096));
 
         // create `PhysFrame` types from the start addresses
-        frame_addresses.map(|addr| PhysFrame::containing_address(PhysAddr::new(addr)))
+        frame_address.map(|addr| PhysFrame::containing_address(PhysAddr::new(addr)))
     }
 }

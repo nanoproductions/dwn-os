@@ -2,12 +2,12 @@
 use vga::colors::Color16;
 use vga::writers::{Graphics640x480x16, GraphicsWriter};
 
-pub const MODE:  Graphics640x480x16 = Graphics640x480x16::new();
+pub const MODE: Graphics640x480x16 = Graphics640x480x16::new();
 // static mut PREVIOUS_MOUSE: [usize; 2] = [0, 0];
 
 pub mod window;
 
-pub fn create_GUI() {
+pub fn create_gui() {
 	MODE.set_mode();
 	MODE.clear_screen(Color16::White);
 
@@ -34,19 +34,14 @@ pub fn create_GUI() {
 	// serial_println!("Hello from GUI!");
 }
 
-struct Position {
-	x: isize,
-	y: isize
-}
-
 pub fn draw_mouse() {
 	MODE.clear_screen(Color16::Red);
 }
 
 #[cfg(test)]
 mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
+	#[test]
+	fn it_works() {
+		assert_eq!(2 + 2, 4);
+	}
 }

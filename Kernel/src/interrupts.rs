@@ -59,7 +59,6 @@ pub enum InterruptIndex {
     Mouse = PIC_1_OFFSET + 12,
 }
 
-
 impl InterruptIndex {
     fn as_u8(self) -> u8 {
         self as u8
@@ -70,7 +69,6 @@ impl InterruptIndex {
     }
 }
 
-#[macro_use]
 extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: &mut InterruptStackFrame) {
     // print!(".");
 
@@ -81,7 +79,7 @@ extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: &mut InterruptSt
 }
 
 // KEYBOARD
-#[macro_use]
+
 extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: &mut InterruptStackFrame) {
     use pc_keyboard::{layouts, DecodedKey, HandleControl, Keyboard, ScancodeSet1};
     use spin::Mutex;
@@ -118,22 +116,22 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: &mut Interrup
     }
 }
 
-#[macro_use]
 extern "x86-interrupt" fn mouse_interrupt_handler(_stack_frame: &mut InterruptStackFrame) {
     use super::mouse::MOUSE;
     use x86_64::instructions::port::PortReadOnly;
 
     let mut port = PortReadOnly::new(0x60);
-    let packet = unsafe {port.read()};
+    let packet = unsafe { port.read() };
     MOUSE.lock().process_packet(packet);
 
     unsafe {
-        PICS.lock().notify_end_of_interrupt(InterruptIndex::Mouse.as_u8());
+        PICS.lock()
+            .notify_end_of_interrupt(InterruptIndex::Mouse.as_u8());
     }
 }
 
-use x86_64::structures::idt::PageFaultErrorCode;
 use crate::hlt_loop;
+use x86_64::structures::idt::PageFaultErrorCode;
 
 extern "x86-interrupt" fn page_fault_handler(
     stack_frame: &mut InterruptStackFrame,
