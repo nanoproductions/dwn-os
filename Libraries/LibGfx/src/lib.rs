@@ -1,5 +1,5 @@
 #![no_std]
-use vga::colors::Color16;
+use vga::colors::{Color16};
 use vga::writers::{Graphics640x480x16, GraphicsWriter};
 
 pub const MODE: Graphics640x480x16 = Graphics640x480x16::new();

@@ -3,6 +3,6 @@
     "rust-client.engine": "rls",
     "rust.rust-analyzer": {
         "releaseTag": "stable",
-        "path": null
-    }
+    },
+    "rust.show_warnings": true
 }
