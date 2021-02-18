@@ -4,11 +4,13 @@ use core::ptr::null_mut;
 pub struct Dummy;
 
 pub mod bump;
+pub mod linked_list;
 
 use linked_list_allocator::LockedHeap;
+use bump::BumpAllocator;
 
 #[global_allocator]
-static ALLOCATOR: LockedHeap = LockedHeap::empty();
+static ALLOCATOR: Locked<BumpAllocator> = Locked::new(BumpAllocator::new());
 
 unsafe impl GlobalAlloc for Dummy {
     unsafe fn alloc(&self, _layout: Layout) -> *mut u8 {
@@ -66,7 +68,7 @@ pub struct Locked<A> {
 }
 
 impl<A> Locked<A> {
-    pun const fn new(inner: A) -> Self {
+    pub const fn new(inner: A) -> Self {
         Locked {
             inner: spin::Mutex::new(inner),
         }
