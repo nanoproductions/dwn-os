@@ -37,7 +37,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 	allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
 	// Allocate number on the heap
-	let heap_value = Box::new(41);
+	let heap_value = Box::new(41);	
 	println!("heap_value at {:p}", heap_value);
 
 	// create dynamically sized vector

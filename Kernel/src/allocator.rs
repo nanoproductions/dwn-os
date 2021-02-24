@@ -5,12 +5,14 @@ pub struct Dummy;
 
 pub mod bump;
 pub mod linked_list;
+pub mod fixed_size_block;
 
-use linked_list_allocator::LockedHeap;
+use linked_list::LinkedListAllocator;
 use bump::BumpAllocator;
+use fixed_size_block::FixedSizeBlockAllocator;
 
 #[global_allocator]
-static ALLOCATOR: Locked<BumpAllocator> = Locked::new(BumpAllocator::new());
+static ALLOCATOR: Locked<FixedSizeBlockAllocator> = Locked::new(FixedSizeBlockAllocator::new());
 
 unsafe impl GlobalAlloc for Dummy {
     unsafe fn alloc(&self, _layout: Layout) -> *mut u8 {
@@ -48,7 +50,7 @@ pub fn init_heap(
     for page in page_range {
         let frame = frame_allocator
             .allocate_frame()
-            .ok_or(MapToError::FrameAllocationFailed)?;
+        .ok_or(MapToError::FrameAllocationFailed)?;
         let flags = PageTableFlags::PRESENT | PageTableFlags::WRITABLE;
         unsafe {
             mapper.map_to(page, frame, flags, frame_allocator)?.flush()

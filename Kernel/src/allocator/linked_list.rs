@@ -1,14 +1,15 @@
-use super::align_up;
-use core::mem;
+use super::{align_up, Locked};
+use alloc::alloc::{GlobalAlloc, Layout};
+use core::{mem, ptr};
 
 struct ListNode {
     size: usize,
-    next: Option<&'static mut ListNode>
+    next: Option<&'static mut ListNode>,
 }
 
 impl ListNode {
     const fn new(size: usize) -> Self {
-        ListNode {size, next: None}
+        ListNode { size, next: None }
     }
 
     fn start_addr(&self) -> usize {
@@ -57,7 +58,6 @@ impl LinkedListAllocator {
                 let ret = Some((current.next.take().unwrap(), alloc_start));
                 current.next = next;
                 return ret;
-
             } else {
                 // region not suitable -> continue with next region
                 current = current.next.as_mut().unwrap();
@@ -84,5 +84,42 @@ impl LinkedListAllocator {
 
         // region suitable
         Ok(alloc_start)
+    }
+
+    fn size_align(layout: Layout) -> (usize, usize) {
+        let layout = layout
+            .align_to(mem::align_of::<ListNode>())
+            .expect("adjusting alignment failed")
+            .pad_to_align();
+
+        let size = layout.size().max(mem::size_of::<ListNode>());
+        (size, layout.align())
+    }
+}
+
+unsafe impl GlobalAlloc for Locked<LinkedListAllocator> {
+    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
+        let (size, align) = LinkedListAllocator::size_align(layout);
+        let mut allocator = self.lock();
+
+        if let Some((region, alloc_start)) = allocator.find_region(size, align) {
+            let alloc_end = alloc_start.checked_add(size).expect("overflow");
+            let excess_size = region.end_addr() - alloc_end;
+
+            if excess_size > 0 {
+                allocator.add_free_region(alloc_end, excess_size);
+            }
+
+            alloc_start as *mut u8
+        } else {
+            ptr::null_mut()
+        }
+    }
+
+    unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
+        // perform layout adjustments
+        let (size, _) = LinkedListAllocator::size_align(layout);
+
+        self.lock().add_free_region(ptr as usize, size)
     }
 }
