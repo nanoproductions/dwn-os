@@ -10,6 +10,8 @@ use dwn_os::println;
 
 extern crate alloc;
 use alloc::{boxed::Box, vec, vec::Vec, rc::Rc};
+use alloc::string::String;
+use dwn_os::task::{Task, simple_executor::SimpleExecutor};
 
 use bootloader::{entry_point, BootInfo};
 
@@ -71,6 +73,10 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 		println!("{:?} -> {:?}", virt, phys);
 	}
 
+	let mut executor = SimpleExecutor::new();
+	executor.spawn(Task::new(example_task()));
+	executor.run();
+
 	#[cfg(test)]
 	test_main();
 
@@ -80,9 +86,6 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 	test_main();
 
 	println!("Did not crash!");
-
-	// CREATE SHELL
-	// Shell::create_shell();
 
 	// lib_gfx::create_GUI();
 
@@ -93,6 +96,15 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 	// serial_println!("Creating window...");
 
 	dwn_os::hlt_loop();
+}
+
+async fn async_number() -> u32 {
+	42
+}
+
+async fn example_task() {
+	let number = async_number().await;
+	println!("async number: {}", number);
 }
 
 // Panic Function

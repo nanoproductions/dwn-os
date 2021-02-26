@@ -14,6 +14,8 @@ pub mod memory;
 pub mod mouse;
 pub mod serial;
 pub mod vga_buffer;
+pub mod shell;
+pub mod task;
 // pub mod rtc;
 
 extern crate alloc;

@@ -3,5 +3,4 @@
 members = [
     "Kernel/",
     "Libraries/LibGfx",
-    "Shell/",
 ]
