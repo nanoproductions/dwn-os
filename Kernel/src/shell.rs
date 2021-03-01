@@ -1,3 +1,5 @@
+#[warn(dead_code)]
+
 use crate::print;
 use alloc::string::String;
 

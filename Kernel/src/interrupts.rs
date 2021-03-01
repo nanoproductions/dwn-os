@@ -4,7 +4,6 @@ use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 use lazy_static::lazy_static;
 
 use crate::gdt;
-use crate::print;
 use crate::serial_println;
 
 use pic8259_simple::ChainedPics;
@@ -88,7 +87,7 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: &mut Interrup
     let scancode: u8 = unsafe { port.read() };
     
     crate::task::keyboard::add_scancode(scancode);
-
+    
     unsafe {
         PICS.lock()
             .notify_end_of_interrupt(InterruptIndex::Keyboard.as_u8());

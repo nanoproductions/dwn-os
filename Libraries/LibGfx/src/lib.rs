@@ -1,4 +1,6 @@
 #![no_std]
+#![cfg_attr(test, no_main)]
+
 use vga::colors::{Color16};
 use vga::writers::{Graphics640x480x16, GraphicsWriter};
 
