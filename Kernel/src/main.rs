@@ -12,6 +12,8 @@ extern crate alloc;
 use alloc::{boxed::Box, vec, vec::Vec, rc::Rc};
 use alloc::string::String;
 use dwn_os::task::{Task, simple_executor::SimpleExecutor};
+use dwn_os::task::executor::Executor;
+use dwn_os::task::keyboard;
 
 use bootloader::{entry_point, BootInfo};
 
@@ -73,8 +75,9 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 		println!("{:?} -> {:?}", virt, phys);
 	}
 
-	let mut executor = SimpleExecutor::new();
+	let mut executor = Executor::new();
 	executor.spawn(Task::new(example_task()));
+	executor.spawn(Task::new(keyboard::print_keypresses()));
 	executor.run();
 
 	#[cfg(test)]

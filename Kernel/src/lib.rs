@@ -6,6 +6,7 @@
 #![reexport_test_harness_main = "test_main"]
 #![feature(abi_x86_interrupt)]
 #![feature(const_mut_refs)]
+#![feature(wake_trait)]
 
 pub mod allocator;
 pub mod gdt;
