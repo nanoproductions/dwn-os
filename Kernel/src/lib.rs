@@ -102,7 +102,7 @@ pub fn init() {
 
 	// GUI Stuff lol
 	lib_gfx::create_gui();
-	// mouse::CURSOR.draw_initial_mouse();
+	mouse::CURSOR.lock().draw_initial_mouse();
 }
 
 pub fn hlt_loop() -> ! {

@@ -1,8 +1,8 @@
 #![no_std]
 #![cfg_attr(test, no_main)]
 
-use vga::writers::Graphics640x480x16;
-use vga::{colors::Color16, writers::GraphicsWriter};
+use vga::writers::{Graphics640x480x16, GraphicsWriter};
+use vga::{colors::Color16};
 
 pub const MODE: Graphics640x480x16 = Graphics640x480x16::new();
 
@@ -35,26 +35,22 @@ pub fn create_gui() {
 
     // serial_println!("Hello from GUI!");
 }
-
+#[derive(Debug, Clone, Copy)]
 pub struct Cursor {
-    cursor_x: isize,
-    cursor_y: isize,
+    pub cursor_x: isize,
+    pub cursor_y: isize,
 }
 
 impl Cursor {
 
-	pub const fn init() -> Cursor {
+	pub fn init() -> Cursor {
 		Cursor {
 			cursor_x: 320,
 			cursor_y: 240
 		}
 	}
 
-    pub fn get_x(&self) -> isize {
-        self.cursor_x
-    }
-
-    pub fn draw_initial_mouse(&self) {
+    pub fn draw_initial_mouse(&mut self) {
         let x_center = 320;
         let y_center = 240;
 
@@ -69,8 +65,8 @@ impl Cursor {
 
     pub fn draw_mouse(&mut self, x: isize, y: isize) {
 
-		self.cursor_x += x;
-		self.cursor_y -= y;
+        self.cursor_x = self.cursor_x + x;
+        self.cursor_y = self.cursor_y - y;
 
         let x_main = self.cursor_x;
         let y_main = self.cursor_y;
