@@ -15,6 +15,8 @@ use dwn_os::task::{Task, simple_executor::SimpleExecutor};
 use dwn_os::task::executor::Executor;
 use dwn_os::task::keyboard;
 
+use lib_gfx;
+
 use bootloader::{entry_point, BootInfo};
 
 entry_point!(kernel_main);
@@ -41,6 +43,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
 	#[cfg(test)]
 	test_main();
+	// lib_gfx::painter::draw_square(10, 10, 50, 50);
 
 	let mut executor: Executor = Executor::new();
 	executor.spawn(Task::new(example_task()));

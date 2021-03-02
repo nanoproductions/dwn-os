@@ -23,6 +23,8 @@ extern crate alloc;
 
 use core::panic::PanicInfo;
 
+use lib_gfx;
+
 pub trait Testable {
 	fn run(&self) -> ();
 }
@@ -97,6 +99,10 @@ pub fn init() {
 	unsafe { interrupts::PICS.lock().initialize() };
 	mouse::init_mouse();
 	x86_64::instructions::interrupts::enable();
+
+	// GUI Stuff lol
+	lib_gfx::create_gui();
+	// mouse::CURSOR.draw_initial_mouse();
 }
 
 pub fn hlt_loop() -> ! {
