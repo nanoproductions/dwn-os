@@ -24,7 +24,7 @@ fn on_complete(mouse_state: MouseState) {
         // CURSOR.cursor_x = CURSOR.cursor_x + mouse_state.get_x() as isize;
         // CURSOR.lock().cursor_y = CURSOR.lock().cursor_y + mouse_state.get_y() as isize;
 
-        serial_println!("{}", CURSOR.lock().cursor_y);
+        // serial_println!("{}", CURSOR.lock().cursor_y);
         CURSOR.lock().draw_mouse(mouse_state.get_x() as isize, mouse_state.get_y() as isize);
         // serial_println!("x mouse{:?}", mouse_state.get_x());
         // serial_println!("y mouse{:?}", mouse_state.get_y());

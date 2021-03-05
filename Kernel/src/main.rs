@@ -66,6 +66,10 @@ async fn example_task() {
 	println!("async number: {}", number);
 }
 
+async fn load_gui(gui_load: ()) -> () {
+	gui_load();
+}
+
 // Panic Function
 #[cfg(not(test))]
 #[panic_handler]
